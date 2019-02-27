@@ -186,7 +186,7 @@ def compute(metadata, solver_file_override=None):
 
 def load_input_data(file_location):
     with open(file_location, 'r') as input_data_file:
-        input_data = ''.join(input_data_file.readlines())
+        input_data: str = ''.join(input_data_file.readlines())
     return input_data
 
 
