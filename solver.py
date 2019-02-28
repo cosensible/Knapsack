@@ -5,6 +5,7 @@ from operator import itemgetter
 
 Item = namedtuple("Item", ['i', 'v', 'w', 'vpw'])
 
+
 def parse_input(input_data):
     global items, capacity, item_num, taken, sol, best_value, cur_value, cur_weight
     # parse the input
@@ -26,6 +27,19 @@ def parse_input(input_data):
     items.sort(key=itemgetter(3), reverse=True)
 
 
+def greedy():
+    global g_sol
+    g_sol = [0]*item_num
+    g_best_value = g_cur_weight = 0
+
+    for it in items:
+        if it.w+g_cur_weight <= capacity:
+            g_best_value += it.v
+            g_cur_weight += it.w
+            g_sol[it.i] = 1
+    return g_best_value
+
+
 def bound(i):
     bound = cur_value
     cleft = capacity - cur_weight
@@ -45,8 +59,8 @@ def trace(i):
         # print(taken)
         # print("The value is:",value)
         if cur_value > best_value:
-            best_value = cur_value
             sol = list(taken)
+            best_value = cur_value
         return
 
     it = items[i]
@@ -65,12 +79,20 @@ def trace(i):
 
 def solve_it(input_data):
     # Modify this code to run your optimization algorithm
+    global best_value, sol
+    is_optimal = 1
     parse_input(input_data)
-
-    trace(0)
+    best_value = greedy()
+    try:
+        trace(0)
+    except Exception as e:
+        print(e)
+        if not sol:
+            sol = g_sol
+        is_optimal = 0
 
     # prepare the solution in the specified output format
-    output_data = str(best_value) + ' ' + str(1) + '\n'
+    output_data = str(best_value) + ' ' + str(is_optimal) + '\n'
     output_data += ' '.join(map(str, sol))
     return output_data
 
